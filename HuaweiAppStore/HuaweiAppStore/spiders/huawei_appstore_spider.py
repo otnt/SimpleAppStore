@@ -18,7 +18,7 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
 
     name = "huawei_appstore_trending"
     allowed_domains = ["huawei.com"]
-    start_urls = ["http://appstore.huawei.com/more/all/40"]
+    start_urls = ["http://appstore.huawei.com/more/all/1"]
 
     def parse(self, response):
         has_content = False
