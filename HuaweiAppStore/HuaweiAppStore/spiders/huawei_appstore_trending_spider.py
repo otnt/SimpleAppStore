@@ -1,4 +1,5 @@
 import scrapy
+import json
 from scrapy.selector import Selector
 from HuaweiAppStore.items import HuaweiAppStoreItem
 
@@ -18,7 +19,9 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
 
     name = "huawei_appstore_trending"
     allowed_domains = ["huawei.com"]
-    start_urls = ["http://appstore.huawei.com/more/all/1"]
+    start_urls = ["http://appstore.huawei.com/more/all/41"]
+    pipelines = ["HuaweiappstoreDuplicatePipeline",\
+            "HuaweiappstoreTrendingPipeline"]
 
     def parse(self, response):
         has_content = False
@@ -30,16 +33,16 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
             game_info = app.xpath("div[@class='game-info  whole']")
 
             item = HuaweiAppStoreItem()
-            item['image'] = app.xpath("div[@class='game-info-ico']/a\
-                    /img/@lazyload").extract()
-            item['title'] = game_info.xpath("h4[@class='title']/a\
-                    /text()").extract()
-            item['appid'] = game_info.xpath("h4[@class='title']/a/@href")\
+            item['image'] = app.xpath("./div[@class='game-info-ico']/a\
+                    /img/@lazyload").extract().encode("utf-8")
+            item['title'] = game_info.xpath("./h4[@class='title']/a\
+                    /text()").extract().encode("utf-8")
+            item['appid'] = game_info.xpath("./h4[@class='title']/a/@href")\
                     .re('http://appstore.huawei.com:80/app/(C\d+)')
-            item['desc'] = game_info.xpath("div[@class='game-info-dtail part']\
-                    /p[@class='content']/text()").extract()
+            item['desc'] = game_info.xpath("./div[@class='game-info-dtail part']\
+                    /p[@class='content']/text()").extract().encode("utf-8")
             yield item
-
+            
         #Then, try to find next page, if exist
         if has_content:
             curr_url = response.url

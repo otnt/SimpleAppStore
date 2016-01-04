@@ -12,3 +12,10 @@ class HuaweiAppStoreItem(scrapy.Item):
     appid = scrapy.Field()
     image = scrapy.Field()
     desc = scrapy.Field()
+
+class HuaweiAppStoreTopicAppItem(scrapy.Item):
+    topic = scrapy.Field()
+    title = scrapy.Field()
+    appid = scrapy.Field()
+    image = scrapy.Field()
+    desc = scrapy.Field()

@@ -62,7 +62,9 @@ NEWSPIDER_MODULE = 'HuaweiAppStore.spiders'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'HuaweiAppStore.pipelines.HuaweiappstorePipeline': 300,
+    'HuaweiAppStore.pipelines.HuaweiappstoreDuplicatePipeline' : 10,
+    'HuaweiAppStore.pipelines.HuaweiappstoreTrendingPipeline' : 20,
+    'HuaweiAppStore.pipelines.HuaweiappstoreTopicPipeline' : 30,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
