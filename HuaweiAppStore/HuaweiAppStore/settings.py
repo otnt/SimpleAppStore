@@ -36,10 +36,11 @@ NEWSPIDER_MODULE = 'HuaweiAppStore.spiders'
 #TELNETCONSOLE_ENABLED=False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+   'Accept-Language': 'en',
+   'USER-AGENT' : 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.7',
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
@@ -49,9 +50,14 @@ NEWSPIDER_MODULE = 'HuaweiAppStore.spiders'
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'HuaweiAppStore.middlewares.MyCustomDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'scrapyjs.SplashMiddleware' : 725,
+}
+#SPLASH_URL = "http://192.168.59.103:8050/"
+SPLASH_URL = "http://0.0.0.0:8050/"
+DUPEFILTER_CLASS = "scrapyjs.SplashAwareDupeFilter"
+HTTPCACHE_STORAGE = "scrapyjs.SplashAwareFSCacheStorage"
+DOWNLOAD_DELAY = 0.25 
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html

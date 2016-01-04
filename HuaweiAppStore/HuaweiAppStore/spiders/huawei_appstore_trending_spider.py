@@ -19,9 +19,18 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
 
     name = "huawei_appstore_trending"
     allowed_domains = ["huawei.com"]
-    start_urls = ["http://appstore.huawei.com/more/all/41"]
+    start_urls = ["http://appstore.huawei.com/more/all/40"]
     pipelines = ["HuaweiappstoreDuplicatePipeline",\
             "HuaweiappstoreTrendingPipeline"]
+
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(url, self.parse, meta={\
+                    'splash': {\
+                    'endpoint': 'render.html',\
+                    'args': {'wait': 0.5}\
+                }\
+            })
 
     def parse(self, response):
         has_content = False
@@ -32,22 +41,30 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
             has_content = True
             game_info = app.xpath("div[@class='game-info  whole']")
 
+            print Selector(response).xpath("//div[@class='page-ctrl ctrl-app']")
+
             item = HuaweiAppStoreItem()
             item['image'] = app.xpath("./div[@class='game-info-ico']/a\
-                    /img/@lazyload").extract().encode("utf-8")
+                    /img/@lazyload").extract()[0]
             item['title'] = game_info.xpath("./h4[@class='title']/a\
-                    /text()").extract().encode("utf-8")
+                    /text()").extract()[0].encode("utf-8")
             item['appid'] = game_info.xpath("./h4[@class='title']/a/@href")\
-                    .re('http://appstore.huawei.com:80/app/(C\d+)')
-            item['desc'] = game_info.xpath("./div[@class='game-info-dtail part']\
-                    /p[@class='content']/text()").extract().encode("utf-8")
+                    .re('http://appstore.huawei.com:80/app/(C\d+)')[0]
+            item['desc'] = u''.join(game_info.xpath("./div[@class='game-info-dtail part']\
+                    /p[@class='content']/text()").extract()).encode("utf-8")
             yield item
             
         #Then, try to find next page, if exist
-        if has_content:
-            curr_url = response.url
-            split_position = curr_url.rfind("/")
-            #simply add page index by 1
-            next_url = u''.join((curr_url[:split_position + 1],\
-                str(int(curr_url[split_position + 1:]) + 1)))
-            yield scrapy.Request(next_url, self.parse)
+        #if has_content:
+        #    curr_url = response.url
+        #    split_position = curr_url.rfind("/")
+        #    #simply add page index by 1
+        #    next_url = u''.join((curr_url[:split_position + 1],\
+        #        str(int(curr_url[split_position + 1:]) + 1)))
+        #    #yield scrapy.Request(next_url, self.parse)
+        #    yield scrapy.Request(next_url, self.parse, meta={\
+        #        'splash': {\
+        #            'endpoint': 'render.html',\
+        #            'args': {'wait': 0.5}\
+        #        }\
+        #    })
