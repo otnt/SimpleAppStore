@@ -118,27 +118,33 @@ class CalculateTopApp(object):
                 .find({"user_id" : user_id})[0]['download_history']
         self.calculate_all_app_relation()
 
-        #get user recommend app dict
-        user_recommend_app_dict = {}
-        for app in download_history:
-            for recommend_app in self.app_relation[app]:
-                #if already downloaded, doesn't recommend
-                if recommend_app in download_history:
+        return self.calculate_recommend_app_list(download_history, self.app_relation)
+
+    def calculate_recommend_app_list(self, src_list, app_relation):
+        '''
+        Based on src_list and app relation, calculate recommend app list
+        '''
+        #get recommend app dict
+        recommend_app_dict = {}
+        for app in src_list:
+            for recommend_app in app_relation[app]:
+                #if already has, doesn't recommend
+                if recommend_app in src_list:
                     continue
                 #save relation parameter
-                para = self.app_relation[app][recommend_app]
-                if recommend_app in user_recommend_app_dict:
-                    user_recommend_app_dict[recommend_app] += para
+                para = app_relation[app][recommend_app]
+                if recommend_app in recommend_app_dict:
+                    recommend_app_dict[recommend_app] += para
                 else:
-                    user_recommend_app_dict[recommend_app] = para
+                    recommend_app_dict[recommend_app] = para
 
-        #get sorted user recommend app list
-        user_recommend_app_list = []
-        for app in user_recommend_app_dict:
-            user_recommend_app_list.append([app, user_recommend_app_dict[app]])
-        user_recommend_app_list.sort(key = lambda x : x[1], reverse = True)
+        #get sorted recommend app list
+        recommend_app_list = []
+        for app in recommend_app_dict:
+            recommend_app_list.append([app, recommend_app_dict[app]])
+        recommend_app_list.sort(key = lambda x : x[1], reverse = True)
 
-        return user_recommend_app_list
+        return recommend_app_list
 
     def show_user_top_n_recommend_app_list(self, user_id, n):
         '''

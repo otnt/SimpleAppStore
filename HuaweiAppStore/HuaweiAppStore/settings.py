@@ -52,9 +52,18 @@ DEFAULT_REQUEST_HEADERS = {
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapyjs.SplashMiddleware' : 725,
+    'scrapy.downloadermiddleware.useragent.UserAgentMiddleware' : None,
+    'HuaweiAppStore.RandomUserAgent.RandomUserAgentMiddleware' : 400,
+    #'HuaweiAppStore.RandomProxy.RandomProxyMiddleware' : 100,
+    #'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110
 }
-#SPLASH_URL = "http://192.168.59.103:8050/"
-SPLASH_URL = "http://0.0.0.0:8050/"
+# Proxy list containing entries like
+# http://host1:port
+# http://username:password@host2:port
+# http://host3:port
+# ...
+PROXY_LIST = '/Users/pufanjiang/Google Drive/Learning/ComputerScience/SimpleAppStore/HuaweiAppStore/HuaweiAppStore/proxy_list.txt'
+SPLASH_URL = "http://192.168.99.100:8050/" #ip is get when starting docker
 DUPEFILTER_CLASS = "scrapyjs.SplashAwareDupeFilter"
 HTTPCACHE_STORAGE = "scrapyjs.SplashAwareFSCacheStorage"
 DOWNLOAD_DELAY = 0.25 

@@ -1,5 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import scrapy
 import json
+import sys
 from scrapy.selector import Selector
 from HuaweiAppStore.items import HuaweiAppStoreItem
 
@@ -33,19 +37,14 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
             })
 
     def parse(self, response):
-        has_content = False
-
         #First, scrape all apps' info in this page
         for app in Selector(response)\
                 .xpath("//div[contains(@class, 'list-game-app')]"):
-            has_content = True
             game_info = app.xpath("div[@class='game-info  whole']")
-
-            print Selector(response).xpath("//div[@class='page-ctrl ctrl-app']")
 
             item = HuaweiAppStoreItem()
             item['image'] = app.xpath("./div[@class='game-info-ico']/a\
-                    /img/@lazyload").extract()[0]
+                    /img/@src").extract()[0]
             item['title'] = game_info.xpath("./h4[@class='title']/a\
                     /text()").extract()[0].encode("utf-8")
             item['appid'] = game_info.xpath("./h4[@class='title']/a/@href")\
@@ -55,16 +54,18 @@ class HuaweiAppStoreTrendingSpider(scrapy.Spider):
             yield item
             
         #Then, try to find next page, if exist
-        #if has_content:
-        #    curr_url = response.url
-        #    split_position = curr_url.rfind("/")
-        #    #simply add page index by 1
-        #    next_url = u''.join((curr_url[:split_position + 1],\
-        #        str(int(curr_url[split_position + 1:]) + 1)))
-        #    #yield scrapy.Request(next_url, self.parse)
-        #    yield scrapy.Request(next_url, self.parse, meta={\
-        #        'splash': {\
-        #            'endpoint': 'render.html',\
-        #            'args': {'wait': 0.5}\
-        #        }\
-        #    })
+        next_page = Selector(response).xpath("//div[@class='page-ctrl ctrl-app']/a").extract()
+        #If could not find this div, splash must be wrong
+        if len(next_page) == 0:
+            print "Javascript could not fetch! Please make sure splash is running and setting is corrent!"
+            sys.exit(1)
+        if len(next_page) >= 2 and next_page[-2].find("下一页".decode("utf-8")) != -1:
+            next_url = Selector(response)\
+                    .xpath("//div[@class='page-ctrl ctrl-app']/a[last()-1]/@href")\
+                    .extract_first()
+            yield scrapy.Request(next_url, self.parse, meta={\
+                'splash': {\
+                    'endpoint': 'render.html',\
+                    'args': {'wait': 0.5}\
+                }\
+            })
