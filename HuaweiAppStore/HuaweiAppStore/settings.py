@@ -62,6 +62,7 @@ DOWNLOADER_MIDDLEWARES = {
 # http://username:password@host2:port
 # http://host3:port
 # ...
+#website of free proxys: https://incloak.com/proxy-list/?country=US&type=h
 PROXY_LIST = '/Users/pufanjiang/Google Drive/Learning/ComputerScience/SimpleAppStore/HuaweiAppStore/HuaweiAppStore/proxy_list.txt'
 SPLASH_URL = "http://192.168.99.100:8050/" #ip is get when starting docker
 DUPEFILTER_CLASS = "scrapyjs.SplashAwareDupeFilter"
