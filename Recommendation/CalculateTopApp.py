@@ -201,6 +201,7 @@ class CalculateTopApp(object):
 if __name__ == "__main__":
     start = time.clock()
     c = CalculateTopApp()
-    print c.calculate_user_top_n_recommend_app_list(3,5)
+    #print c.calculate_user_top_n_recommend_app_list(3,5)
+    c.calculate_top_n_app(5)
     end = time.clock()
     print end - start

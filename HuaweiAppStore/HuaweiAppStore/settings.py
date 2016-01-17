@@ -52,7 +52,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapyjs.SplashMiddleware' : 725,
-    'scrapy.downloadermiddleware.useragent.UserAgentMiddleware' : None,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware' : None,
     'HuaweiAppStore.RandomUserAgent.RandomUserAgentMiddleware' : 400,
     #'HuaweiAppStore.RandomProxy.RandomProxyMiddleware' : 100,
     #'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110
